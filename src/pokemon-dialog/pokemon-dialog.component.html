@@ -1,0 +1,16 @@
+<div class="name">{{data.name}}</div>
+
+
+<div class="container">
+  <div class="abilities-title">Abilities</div>
+    @for (ability of data.abilities ; track ability.slot)  {
+      <div>{{ability.ability?.name}}</div>
+    }
+  </div>
+
+<div class="container">
+  <div class="types-title">Types</div>
+  @for (type of data.types ; track type.slot)  {
+    <div>{{type.type?.name}}</div>
+  }
+</div>
