@@ -1,0 +1,44 @@
+:host {
+  display:flex;
+}
+.container{
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+.pokemon-name {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  &:hover{
+    cursor: pointer;
+    background-color: lightgray;
+  }
+}
+/* virtual-scroll-table.component.css */
+.table-container {
+  height: 600px; /* Set desired height for the viewport */
+  width: 100%;
+  overflow: auto;
+}
+
+.virtual-scroll-viewport {
+  height: 500px;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+th.mat-header-cell, td.mat-cell {
+  height: 48px; /* Must match itemSize in the viewport */
+  box-sizing: border-box;
+}
