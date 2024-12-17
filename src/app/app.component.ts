@@ -1,4 +1,4 @@
-import {Component, computed, effect, ElementRef, inject, Renderer2, signal, Signal, viewChild} from '@angular/core';
+import {Component, computed, effect, ElementRef, inject, Renderer2, signal, viewChild} from '@angular/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {
   MatCell,
@@ -11,13 +11,13 @@ import {
 } from '@angular/material/table';
 import {PokemonService} from '../pokemon.service';
 import {CommonModule} from '@angular/common';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {debounceTime, from, fromEvent, map, tap} from 'rxjs';
-import {Pokemon, PokemonData, PokemonTableRow} from './types';
+
+import {debounceTime, fromEvent, map, tap} from 'rxjs';
+import {Pokemon, PokemonTableRow} from './types';
 import {MatDialog} from '@angular/material/dialog';
 import {PokemonDialogComponent} from '../pokemon-dialog/pokemon-dialog.component';
-import {CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
+import {CdkFixedSizeVirtualScroll} from '@angular/cdk/scrolling';
+
 
 
 @Component({
@@ -33,9 +33,7 @@ import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
     MatRowDef,
     MatRow,
     MatHeaderRow,
-    MatHeaderRowDef,
-    CdkVirtualScrollViewport,
-    CdkFixedSizeVirtualScroll,
+    MatHeaderRowDef, CdkFixedSizeVirtualScroll,
   ],
 
   templateUrl: './app.component.html',
@@ -55,7 +53,7 @@ export class AppComponent {
   private limit = 60
   private numberOfPagesInBuffer: number = 3;
   private firstPage: number = 1;
-  private pageSize: number = 60;
+
   private totalNumberOfPages: number = 10;
   private renderer = inject(Renderer2);
   tableScrollEvent = effect(() => {
