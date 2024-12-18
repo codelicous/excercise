@@ -12,7 +12,7 @@ export class ImageDisplayerComponent implements OnInit {
       this.displayedSprite.set(this.sprites()[0]|| '');
       setInterval(()=>{
         this.displayedSprite.set(this.sprites()[this.currentImageIndex]);
-        if(this.currentImageIndex === this.sprites().length){
+        if(this.currentImageIndex === this.sprites().length-1){
           this.currentImageIndex = 0;
         } else {
           this.currentImageIndex++;
