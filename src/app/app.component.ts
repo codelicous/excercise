@@ -84,6 +84,7 @@ export class AppComponent {
   }
 
   updatePage($event: PageEvent) {
-    this.offset.set($event.pageIndex);
+    const offSetToSet= ($event.previousPageIndex||0) < $event.pageIndex ? 60 : -60;
+    this.offset.update(val=> val + offSetToSet);
   }
 }
