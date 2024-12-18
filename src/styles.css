@@ -4,7 +4,10 @@
 @tailwind utilities;
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
+display: flex;
+  background-color: lightblue;
+}
 @font-face {
   font-family: pokemon;
   src: url(assets/pokemon_solid.ttf) format("opentype");
