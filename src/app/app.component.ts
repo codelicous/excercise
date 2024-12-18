@@ -1,4 +1,13 @@
-import {Component, computed, effect, ElementRef, inject, Renderer2, signal, viewChild} from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+  WritableSignal
+} from '@angular/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {
   MatCell,
@@ -12,12 +21,11 @@ import {
 import {PokemonService} from '../pokemon.service';
 import {CommonModule} from '@angular/common';
 
-import {debounceTime, fromEvent, map, tap} from 'rxjs';
-import {Pokemon, PokemonTableRow} from './types';
+import {tap} from 'rxjs';
+import {Pokemon, PokemonData, PokemonTableRow} from './types';
 import {MatDialog} from '@angular/material/dialog';
 import {PokemonDialogComponent} from '../pokemon-dialog/pokemon-dialog.component';
-import {CdkFixedSizeVirtualScroll} from '@angular/cdk/scrolling';
-
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 
 
 @Component({
@@ -33,7 +41,8 @@ import {CdkFixedSizeVirtualScroll} from '@angular/cdk/scrolling';
     MatRowDef,
     MatRow,
     MatHeaderRow,
-    MatHeaderRowDef, CdkFixedSizeVirtualScroll,
+    MatHeaderRowDef,
+    MatPaginator,
   ],
 
   templateUrl: './app.component.html',
@@ -42,29 +51,28 @@ import {CdkFixedSizeVirtualScroll} from '@angular/cdk/scrolling';
 export class AppComponent {
   private pokemonService = inject(PokemonService);
   private dialog = inject(MatDialog);
+  private offset = signal(0);
+  public readonly limit = 60
+
+  public pokemonData: WritableSignal<PokemonData | null> = signal(null);
   public readonly displayedColumns = ['name', 'id'];
   public table = viewChild('table', {read: ElementRef});
-  public data = computed(() =>
-    this.pokemonService.getPokemons(this.offset(), this.limit).pipe(
-      map(data => data!.results.map(this.addIdToPokemon.bind(this)))
-    )
-  );
-  private offset = signal(0);
-  private limit = 60
-  private numberOfPagesInBuffer: number = 3;
-  private firstPage: number = 1;
-
-  private totalNumberOfPages: number = 10;
-  private renderer = inject(Renderer2);
-  tableScrollEvent = effect(() => {
-      const subscription = fromEvent(this.table()?.nativeElement, 'scroll').pipe(debounceTime(700)).subscribe(e => this.onTableScroll(e));
-    }
-  );
-
-  private lastPage = computed(() => Math.min(this.totalNumberOfPages, this.firstPage + this.numberOfPagesInBuffer - 1))
+  public data = computed(() => this.pokemonData()?.results.map(this.addIdToPokemon.bind(this)));
+  public paginatorLength = computed(() => this.pokemonData() && Math.round(this.pokemonData()!.count))
 
   private addIdToPokemon(pokemon: Pokemon): PokemonTableRow {
     return {...pokemon, id: pokemon.url.split('/')[6]};
+  }
+
+  constructor() {
+    effect((onCleanup) => {
+      const subscription = this.pokemonService.getPokemons(this.offset(), this.limit).pipe(
+        tap((data: PokemonData) => {
+          this.pokemonData.set(data)
+        })
+      ).subscribe()
+      onCleanup(() => subscription.unsubscribe());
+    })
   }
 
   showPokemonData(id: string): void {
@@ -75,22 +83,7 @@ export class AppComponent {
     )).subscribe();
   }
 
-  private onTableScroll(e: any): void {
-    const tableViewHeight = e.target.offsetHeight // viewport: ~500px
-    const tableScrollHeight = e.target.scrollHeight // length of all table
-    const scrollLocation = e.target.scrollTop; // how far user scrolled
-
-    // If the user has scrolled within 200px of the bottom, add more data
-    const scrollThreshold = 80;
-    const scrollDownLimit = tableScrollHeight - tableViewHeight - scrollThreshold;
-    if (scrollLocation > scrollDownLimit && this.lastPage() < this.totalNumberOfPages) {
-      this.offset.update(val => val += 20);
-      this.scrollTo(tableScrollHeight/2 + tableViewHeight);
-
-    }
-  }
-
-  private scrollTo(position: number): void {
-    this.renderer.setProperty(this.table()!.nativeElement, 'scrollTop', position);
+  updatePage($event: PageEvent) {
+    this.offset.set($event.pageIndex);
   }
 }

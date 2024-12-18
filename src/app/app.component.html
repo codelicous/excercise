@@ -1,18 +1,10 @@
 @let tableData = data();
-@if (tableData){
+@defer(when data()){
+  <div class="container">
 
-  <div class="container"
-      >
-    <cdk-virtual-scroll-viewport
-      itemSize="48"
-      class="virtual-scroll-viewport"
-      minBufferPx="200"
-      maxBufferPx="400"
-
-    >
   <mat-table  #table
               class="mat-table"
-              [dataSource]="tableData">
+              [dataSource]="tableData!">
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
@@ -26,8 +18,13 @@
     <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
-    </cdk-virtual-scroll-viewport>
+  <mat-paginator
+    [length]="paginatorLength()"
+    [pageSize]="limit"
+    (page)="updatePage($event)"
+  ></mat-paginator>
   </div>
-
+} @loading (after 100ms; minimum 100ms){
+  <div>Loading</div>
 }
 
