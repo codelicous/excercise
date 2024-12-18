@@ -1,12 +1,18 @@
 :host {
   display:flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 5vh auto;
+}
+.title {
+  font-size: 2rem;
 }
 .container{
   display: flex;
   flex-direction: column;
   width: 20rem;
+  margin-top: 20px;
 }
-
 .mat-table {
   overflow: auto;
   max-height: 500px;
@@ -29,10 +35,7 @@
   overflow: auto;
 }
 
-.virtual-scroll-viewport {
-  height: 500px;
-  width: 100%;
-}
+
 
 table {
   width: 100%;

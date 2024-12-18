@@ -78,7 +78,7 @@ export class AppComponent {
   showPokemonData(id: string): void {
     this.pokemonService.getPokemon(id).pipe(tap(
       data => {
-        this.dialog.open(PokemonDialogComponent, {width: '250px', data});
+        this.dialog.open(PokemonDialogComponent, {width: '500px',height: '500px', data});
       }
     )).subscribe();
   }
